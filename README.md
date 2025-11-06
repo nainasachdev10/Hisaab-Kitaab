@@ -1,23 +1,4 @@
-# BHOLE Co Hisab Kitab
-
-A modern cricket betting ledger calculator built with React, TypeScript, Vite, and Tailwind CSS.
-
-## Features
-
-- 📊 Track customer exposures for cricket matches
-- 💰 Calculate partner shares and totals
-- 📈 Average odds calculations
-- 🔄 Quick converter: Odds → Exposure
-- 📥 CSV Import/Export functionality
-- 🎨 Modern, responsive UI
-
-## Tech Stack
-
-- **React 18** - UI framework
-- **TypeScript** - Type safety
-- **Vite** - Build tool and dev server
-- **Tailwind CSS** - Styling
-
+# Hisab Kitab
 ## Getting Started
 
 ### Install Dependencies
@@ -74,16 +55,6 @@ To manually deploy:
 2. Navigate to "Pages" section
 3. Select "GitHub Actions" as the source
 4. The workflow will automatically deploy on every push to main/master branch
-
-## Usage
-
-1. **Set Team Names**: Enter names for Team A and Team B
-2. **Add Customers**: Click "+ Add Customer" to add new rows
-3. **Enter Exposures**: Fill in exposure values (negative = you lose if that team wins)
-4. **Set Share %**: Enter your share percentage for each bet
-5. **View Totals**: See automatic calculations for totals and average odds
-6. **Use Converter**: Convert odds to exposures quickly
-7. **Import/Export**: Save and load ledger data via CSV
 
 ## License
 
