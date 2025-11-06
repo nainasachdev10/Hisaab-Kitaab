@@ -1,4 +1,5 @@
 # Hisab Kitab
+
 ## Getting Started
 
 ### Install Dependencies
@@ -29,13 +30,38 @@ npm run preview
 
 ## Deployment
 
-This project is configured for automatic deployment to GitHub Pages using GitHub Actions.
+This project is configured for deployment on Vercel.
 
-### Automatic Deployment
+### Deploy to Vercel
 
-1. Push changes to the `main` or `master` branch
-2. GitHub Actions will automatically build and deploy the app
-3. The site will be available at `https://nainasachdev10.github.io/Hisaab-Kitaab/`
+#### Option 1: Deploy via Vercel CLI
+
+1. Install Vercel CLI:
+   ```bash
+   npm i -g vercel
+   ```
+
+2. Deploy:
+   ```bash
+   vercel
+   ```
+
+3. Follow the prompts to complete deployment
+
+#### Option 2: Deploy via Vercel Dashboard
+
+1. Go to [vercel.com](https://vercel.com) and sign in with your GitHub account
+2. Click "Add New Project"
+3. Import your GitHub repository: `nainasachdev10/Hisaab-Kitaab`
+4. Vercel will auto-detect Vite configuration
+5. Click "Deploy"
+
+### Automatic Deployments
+
+Once connected to Vercel:
+- Every push to `main` branch will trigger an automatic deployment
+- Preview deployments are created for pull requests
+- You can manage deployments from the Vercel dashboard
 
 ### Manual Deployment
 
@@ -49,14 +75,6 @@ To manually deploy:
 2. The `dist` folder contains the production-ready files
 3. Deploy the `dist` folder to your hosting service
 
-### GitHub Pages Setup
-
-1. Go to your repository settings
-2. Navigate to "Pages" section
-3. Select "GitHub Actions" as the source
-4. The workflow will automatically deploy on every push to main/master branch
-
 ## License
 
 MIT
-
