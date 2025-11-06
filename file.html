@@ -1,0 +1,535 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>BHOLE Co Hisab Kitab</title>
+<style>
+  :root{
+    --bg:#0b0f19;
+    --card:#12182a;
+    --ink:#e9efff;
+    --muted:#9fb2ff;
+    --accent:#7cffb2;
+    --accent2:#ffc857;
+    --danger:#ff6b6b;
+    --ok:#6bffad;
+    --line:#223053;
+    --chip:#1a2240;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; font:16px/1.35 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Inter,Arial;
+    background:linear-gradient(135deg,#0b0f19 0%, #0d1325 70%, #10162b 100%);
+    color:var(--ink);
+  }
+  header{
+    padding:18px 18px 8px;
+    background: radial-gradient(1200px 300px at 10% -10%, #3b2bd9 0%, transparent 60%),
+               radial-gradient(900px 300px at 90% -30%, #10d68a 0%, transparent 55%);
+    border-bottom:1px solid #2b3866;
+  }
+  h1{margin:0; font-size:24px; letter-spacing:.4px}
+  .sub{opacity:.85; margin-top:6px}
+  .wrap{max-width:1100px; margin:22px auto; padding:0 14px}
+  .panel{
+    background:var(--card); border:1px solid var(--line); border-radius:14px; padding:16px;
+    box-shadow: 0 10px 30px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.03);
+  }
+  .row{display:flex; gap:12px; flex-wrap:wrap}
+  .row > *{flex:1}
+  label{display:block; font-size:12px; opacity:.9; margin-bottom:6px}
+  input[type="text"], input[type="number"], input[type="file"]{
+    width:100%; padding:10px 12px; border-radius:10px; border:1px solid var(--line);
+    background: #0f1528; color:var(--ink); outline:none;
+  }
+  input[type="number"]{text-align:right}
+  input::placeholder{color:#8aa1ff88}
+  .chips{display:flex; gap:8px; flex-wrap:wrap}
+  .chip{background:var(--chip); border:1px solid var(--line); padding:6px 10px; border-radius:999px; font-size:12px}
+  .btn{
+    background:linear-gradient(180deg, #1d2d58, #142046);
+    color:var(--ink); border:1px solid var(--line); padding:10px 14px; border-radius:10px; cursor:pointer;
+  }
+  .btn:hover{filter:brightness(1.08)}
+  .btn-ghost{background:#0f1528}
+  .btn-add{background:linear-gradient(180deg,#1f865d,#116941); border-color:#145b3e}
+  .btn-danger{background:linear-gradient(180deg,#b33636,#7d2626); border-color:#5c1a1a}
+  table{
+    width:100%; border-collapse:separate; border-spacing:0 10px; margin-top:14px;
+  }
+  thead th{
+    font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.08em; color:var(--muted);
+    padding:6px 8px 0;
+  }
+  tbody tr{background:#0f1528; border:1px solid var(--line)}
+  tbody td{padding:8px; border-top:1px solid var(--line); border-bottom:1px solid var(--line)}
+  tbody tr td:first-child{border-left:1px solid var(--line); border-top-left-radius:10px; border-bottom-left-radius:10px}
+  tbody tr td:last-child{border-right:1px solid var(--line); border-top-right-radius:10px; border-bottom-right-radius:10px}
+  .pill{padding:8px 12px; border-radius:999px; font-variant-numeric: tabular-nums}
+  .neg{background:#2a1620; color:#ffb3c1; border:1px solid #5c2437}
+  .pos{background:#13261c; color:#aaffd6; border:1px solid #1f4b38}
+  .grid{display:grid; gap:12px; grid-template-columns: repeat(2, 1fr)}
+  .kpi{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:14px}
+  .kpi h3{margin:0 0 8px 0; font-size:14px; color:var(--muted)}
+  .big{font-size:28px; font-weight:700; letter-spacing:.3px}
+  .hint{font-size:12px; opacity:.8}
+  .flex-between{display:flex; justify-content:space-between; align-items:center}
+  .note{font-size:12px; color:#bdcaff}
+  .foot{opacity:.9; font-size:12px; margin-top:10px}
+  .section-title{margin:0 0 8px 0; font-size:16px; font-weight:700}
+  .radio-row{display:flex; gap:14px; align-items:center; margin-top:6px}
+  .soft{opacity:.85}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <h1>🧮 BHOLE Co Hisab Kitab</h1>
+    <div class="sub">Fast ledger for cricket customer exposures, partner shares, totals, and average odds.</div>
+    <div class="chips" style="margin-top:10px">
+      <div class="chip">Tip: negative = you lose if that team wins</div>
+      <div class="chip">Example: bet 10k @1.95 on A ⇒ A = -9500, B = +10000</div>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <!-- ORIGINAL LEDGER PANEL (unchanged) -->
+  <div class="panel">
+    <div class="row">
+      <div>
+        <label>Match / Market name</label>
+        <input id="matchName" type="text" placeholder="Pakistan vs South Africa - Winner" />
+      </div>
+      <div>
+        <label>Team A name</label>
+        <input id="teamAName" type="text" value="Team A" />
+      </div>
+      <div>
+        <label>Team B name</label>
+        <input id="teamBName" type="text" value="Team B" />
+      </div>
+      <div style="align-self:end">
+        <button class="btn btn-add" id="addRow">+ Add Customer</button>
+        <button class="btn btn-ghost" id="clearAll">Clear All</button>
+      </div>
+    </div>
+
+    <table id="ledger">
+      <thead>
+        <tr>
+          <th style="text-align:left">Player / Customer</th>
+          <th id="thA">Team A Exposure (±)</th>
+          <th id="thB">Team B Exposure (±)</th>
+          <th>My Share %</th>
+          <th id="thAShare">My Share on A</th>
+          <th id="thBShare">My Share on B</th>
+          <th>Delete</th>
+        </tr>
+      </thead>
+      <tbody id="body">
+        <!-- rows go here -->
+      </tbody>
+    </table>
+
+    <div class="grid" style="margin-top:18px">
+      <div class="kpi">
+        <h3>Total Exposure (All Customers)</h3>
+        <div class="flex-between">
+          <div><span id="sumA" class="pill neg">A: 0</span></div>
+          <div><span id="sumB" class="pill pos">B: 0</span></div>
+        </div>
+        <div class="foot">Numbers are simple sums of columns 2 and 3.</div>
+      </div>
+      <div class="kpi">
+        <h3>Your Share Totals</h3>
+        <div class="flex-between">
+          <div><span id="sumAShare" class="pill neg">A Share: 0</span></div>
+          <div><span id="sumBShare" class="pill pos">B Share: 0</span></div>
+        </div>
+        <div class="foot">Sums of columns 5 and 6.</div>
+      </div>
+    </div>
+
+    <div class="grid" style="margin-top:12px">
+      <div class="kpi">
+        <h3>Average Odds if <span id="aoBName">B</span> is the winning side</h3>
+        <div class="big" id="avgOddsB">—</div>
+        <div class="hint">Formula: 1 + (Total loss on A) / (Total win on B)</div>
+      </div>
+      <div class="kpi">
+        <h3>Average Odds if <span id="aoAName">A</span> is the winning side</h3>
+        <div class="big" id="avgOddsA">—</div>
+        <div class="hint">Formula: 1 + (Total loss on B) / (Total win on A)</div>
+      </div>
+    </div>
+
+    <div class="note" style="margin-top:14px">
+      Note: “loss” uses the absolute of negative totals; “win” uses the positive totals. 
+      If a side has no positive total yet, its average odds is shown as “—”.
+    </div>
+  </div>
+
+  <!-- NEW: QUICK CONVERTER + CSV TOOLS (added at bottom, original untouched) -->
+  <div class="panel" style="margin-top:16px">
+    <div class="section-title">⚙️ Tools — Odds ➜ Exposure + CSV</div>
+    <div class="grid" style="margin-top:10px">
+      <!-- Converter -->
+      <div>
+        <h3 class="soft" style="margin:0 0 8px 0">Quick Converter (Customer BACK bet)</h3>
+        <div class="row">
+          <div>
+            <label>Customer name</label>
+            <input id="convName" type="text" placeholder="DK1" />
+          </div>
+          <div>
+            <label>Stake</label>
+            <input id="convStake" type="number" step="0.01" placeholder="10000" />
+          </div>
+          <div>
+            <label>Odds (decimal)</label>
+            <input id="convOdds" type="number" step="0.01" placeholder="1.95" />
+          </div>
+        </div>
+        <div class="radio-row">
+          <span class="soft">Bet on:</span>
+          <label><input type="radio" name="convSide" id="convSideA" value="A" checked> <span id="labA">Team A</span></label>
+          <label><input type="radio" name="convSide" id="convSideB" value="B"> <span id="labB">Team B</span></label>
+        </div>
+        <div class="row" style="margin-top:10px">
+          <div>
+            <label>My Share %</label>
+            <input id="convShare" type="number" step="0.01" placeholder="20" />
+          </div>
+          <div>
+            <label>Exposure on A (auto)</label>
+            <input id="convA" type="number" step="0.01" placeholder="-9500" readonly />
+          </div>
+          <div>
+            <label>Exposure on B (auto)</label>
+            <input id="convB" type="number" step="0.01" placeholder="10000" readonly />
+          </div>
+        </div>
+        <div class="row" style="margin-top:10px">
+          <button class="btn" id="btnCompute">Compute</button>
+          <button class="btn btn-add" id="btnPushToLedger">Add to Ledger</button>
+          <button class="btn btn-ghost" id="btnClearConv">Clear</button>
+        </div>
+        <div class="foot">Formula (bookmaker view): selected side exposure = <b>-stake × (odds−1)</b>, other side = <b>+stake</b>.</div>
+      </div>
+
+      <!-- CSV -->
+      <div>
+        <h3 class="soft" style="margin:0 0 8px 0">CSV Import / Export</h3>
+        <div class="row">
+          <div>
+            <label>Export current ledger</label>
+            <button class="btn" id="btnExport">Export CSV</button>
+          </div>
+          <div>
+            <label>Import CSV (Player, A, B, Share%)</label>
+            <input id="csvFile" type="file" accept=".csv,text/csv" />
+          </div>
+          <div style="align-self:end">
+            <button class="btn" id="btnImport">Import</button>
+          </div>
+        </div>
+        <div class="foot">Header expected: Player, &lt;Team A name&gt; Exposure, &lt;Team B name&gt; Exposure, Share %</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ORIGINAL SCRIPT (ledger logic) -->
+<script>
+(function(){
+  const body = document.getElementById('body');
+  const addRowBtn = document.getElementById('addRow');
+  const clearAllBtn = document.getElementById('clearAll');
+
+  const teamAName = document.getElementById('teamAName');
+  const teamBName = document.getElementById('teamBName');
+  const thA = document.getElementById('thA');
+  const thB = document.getElementById('thB');
+  const thAShare = document.getElementById('thAShare');
+  const thBShare = document.getElementById('thBShare');
+  const aoAName = document.getElementById('aoAName');
+  const aoBName = document.getElementById('aoBName');
+
+  const sumA = document.getElementById('sumA');
+  const sumB = document.getElementById('sumB');
+  const sumAShare = document.getElementById('sumAShare');
+  const sumBShare = document.getElementById('sumBShare');
+
+  const avgOddsA = document.getElementById('avgOddsA'); // odds if A wins
+  const avgOddsB = document.getElementById('avgOddsB'); // odds if B wins
+
+  function fmt(n){
+    if (Number.isNaN(n) || !isFinite(n)) return '—';
+    return new Intl.NumberFormat('en-GB', {maximumFractionDigits:2}).format(n);
+  }
+
+  function renameHeaders(){
+    thA.textContent = `${teamAName.value || 'Team A'} Exposure (±)`;
+    thB.textContent = `${teamBName.value || 'Team B'} Exposure (±)`;
+    thAShare.textContent = `My Share on ${teamAName.value || 'A'}`;
+    thBShare.textContent = `My Share on ${teamBName.value || 'B'}`;
+    aoAName.textContent = teamAName.value || 'A';
+    aoBName.textContent = teamBName.value || 'B';
+  }
+
+  teamAName.addEventListener('input', renameHeaders);
+  teamBName.addEventListener('input', renameHeaders);
+  renameHeaders();
+
+  function addRow(prefill={}){
+    const tr = document.createElement('tr');
+
+    tr.innerHTML = `
+      <td><input type="text" placeholder="DK1" value="${prefill.name||''}"></td>
+      <td><input type="number" step="1" placeholder="-9500" value="${prefill.a??''}"></td>
+      <td><input type="number" step="1" placeholder="10000" value="${prefill.b??''}"></td>
+      <td><input type="number" step="0.01" placeholder="20" value="${prefill.share??''}"></td>
+      <td class="calcA">0</td>
+      <td class="calcB">0</td>
+      <td style="text-align:center"><button class="btn btn-danger btn-sm">✕</button></td>
+    `;
+    body.appendChild(tr);
+
+    const inputs = tr.querySelectorAll('input');
+    inputs.forEach(i => i.addEventListener('input', () => recalcRow(tr)));
+    tr.querySelector('button').addEventListener('click', () => { tr.remove(); recalcTotals(); });
+
+    recalcRow(tr);
+  }
+
+  function val(n){
+    const x = parseFloat(n);
+    return Number.isFinite(x) ? x : 0;
+  }
+
+  function recalcRow(tr){
+    const a = val(tr.children[1].querySelector('input').value);
+    const b = val(tr.children[2].querySelector('input').value);
+    const share = val(tr.children[3].querySelector('input').value)/100;
+
+    tr.querySelector('.calcA').textContent = fmt(a * share);
+    tr.querySelector('.calcB').textContent = fmt(b * share);
+
+    recalcTotals();
+  }
+
+  function recalcTotals(){
+    let totalA=0, totalB=0, totalAShare=0, totalBShare=0;
+
+    body.querySelectorAll('tr').forEach(tr=>{
+      const a = val(tr.children[1].querySelector('input').value);
+      const b = val(tr.children[2].querySelector('input').value);
+      const share = val(tr.children[3].querySelector('input').value)/100;
+      totalA += a;
+      totalB += b;
+      totalAShare += a*share;
+      totalBShare += b*share;
+    });
+
+    sumA.textContent = `${teamAName.value||'A'}: ${fmt(totalA)}`;
+    sumB.textContent = `${teamBName.value||'B'}: ${fmt(totalB)}`;
+    sumAShare.textContent = `${teamAName.value||'A'} Share: ${fmt(totalAShare)}`;
+    sumBShare.textContent = `${teamBName.value||'B'} Share: ${fmt(totalBShare)}`;
+
+    // Average odds calculations:
+    // If B wins: 1 + (loss on A)/(win on B)
+    const lossOnA = Math.max(0, -totalA);
+    const winOnB  = Math.max(0,  totalB);
+    const lossOnB = Math.max(0, -totalB);
+    const winOnA  = Math.max(0,  totalA);
+
+    avgOddsB.textContent = winOnB>0 ? fmt(1 + lossOnA / winOnB) : '—';
+    avgOddsA.textContent = winOnA>0 ? fmt(1 + lossOnB / winOnA) : '—';
+  }
+
+  addRowBtn.addEventListener('click', ()=>addRow());
+  clearAllBtn.addEventListener('click', ()=>{
+    if(confirm('Clear all rows?')){ body.innerHTML=''; recalcTotals(); }
+  });
+
+  // One starter example row so you see the flow
+  addRow({name:'DK1', a:-9500, b:10000, share:20});
+
+  /* ---------------------- ADDED: Converter + CSV ---------------------- */
+  // keep everything additive — original logic above stays untouched
+  const teamAInput = document.getElementById('teamAName');
+  const teamBInput = document.getElementById('teamBName');
+
+  const labA = document.getElementById('labA');
+  const labB = document.getElementById('labB');
+
+  function syncConverterLabels(){
+    labA.textContent = teamAInput.value || 'Team A';
+    labB.textContent = teamBInput.value || 'Team B';
+  }
+  syncConverterLabels();
+  teamAInput.addEventListener('input', syncConverterLabels);
+  teamBInput.addEventListener('input', syncConverterLabels);
+
+  // Converter fields
+  const convName  = document.getElementById('convName');
+  const convStake = document.getElementById('convStake');
+  const convOdds  = document.getElementById('convOdds');
+  const convShare = document.getElementById('convShare');
+  const convA     = document.getElementById('convA');
+  const convB     = document.getElementById('convB');
+  const btnCompute= document.getElementById('btnCompute');
+  const btnPush   = document.getElementById('btnPushToLedger');
+  const btnClearC = document.getElementById('btnClearConv');
+
+  function round2(n){ return Math.round(n*100)/100; }
+
+  function computeConv(){
+    const side = document.getElementById('convSideA').checked ? 'A' : 'B';
+    const stake = parseFloat(convStake.value||'0');
+    const odds  = parseFloat(convOdds.value||'0');
+
+    const profit = stake * Math.max(0, odds - 1); // customer profit if their side wins
+    let aExp, bExp;
+    if(side==='A'){ aExp = -profit; bExp = +stake; }
+    else          { aExp = +stake;  bExp = -profit; }
+
+    convA.value = isFinite(aExp)? round2(aExp) : '';
+    convB.value = isFinite(bExp)? round2(bExp) : '';
+  }
+
+  btnCompute.addEventListener('click', computeConv);
+  btnClearC.addEventListener('click', ()=>{
+    convName.value = convStake.value = convOdds.value = convShare.value = convA.value = convB.value = '';
+  });
+
+  btnPush.addEventListener('click', ()=>{
+    // ensure exposures are computed
+    if(convA.value==='' || convB.value==='') computeConv();
+
+    // click original "Add Customer" to create row with listeners
+    document.getElementById('addRow').click();
+
+    // fill the last row
+    const last = body.lastElementChild;
+    if(!last) return;
+
+    const nameI  = last.children[0].querySelector('input');
+    const aI     = last.children[1].querySelector('input');
+    const bI     = last.children[2].querySelector('input');
+    const shareI = last.children[3].querySelector('input');
+
+    nameI.value  = convName.value || '';
+    aI.value     = convA.value || 0;
+    bI.value     = convB.value || 0;
+    shareI.value = convShare.value || '';
+
+    // trigger recalculation by dispatching input events
+    [nameI,aI,bI,shareI].forEach(el=>el.dispatchEvent(new Event('input',{bubbles:true})));
+  });
+
+  // CSV Export
+  const btnExport = document.getElementById('btnExport');
+  btnExport.addEventListener('click', ()=>{
+    const aName = teamAInput.value || 'Team A';
+    const bName = teamBInput.value || 'Team B';
+    const rows = [];
+    rows.push(['Player', `${aName} Exposure`, `${bName} Exposure`, 'Share %', `My Share on ${aName}`, `My Share on ${bName}`]);
+
+    body.querySelectorAll('tr').forEach(tr=>{
+      const name  = tr.children[0].querySelector('input').value || '';
+      const a     = tr.children[1].querySelector('input').value || '0';
+      const b     = tr.children[2].querySelector('input').value || '0';
+      const share = tr.children[3].querySelector('input').value || '0';
+      const aShare= parseFloat(a||0) * (parseFloat(share||0)/100);
+      const bShare= parseFloat(b||0) * (parseFloat(share||0)/100);
+      rows.push([name, a, b, share, round2(aShare), round2(bShare)]);
+    });
+
+    const csv = rows.map(r => r.map(x=>{
+      const s = String(x);
+      return s.includes(',') ? `"${s.replace(/"/g,'""')}"` : s;
+    }).join(',')).join('\n');
+
+    const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    const stamp = new Date().toISOString().slice(0,19).replace(/[:T]/g,'-');
+    a.download = `bhole_ledger_${stamp}.csv`;
+    document.body.appendChild(a); a.click(); a.remove();
+  });
+
+  // CSV Import
+  const btnImport = document.getElementById('btnImport');
+  const csvFile   = document.getElementById('csvFile');
+
+  btnImport.addEventListener('click', ()=>{
+    const file = csvFile.files && csvFile.files[0];
+    if(!file){ alert('Choose a CSV file first.'); return; }
+    const reader = new FileReader();
+    reader.onload = e=>{
+      try{
+        const text = e.target.result;
+        const lines = text.split(/\r?\n/).filter(Boolean);
+        if(lines.length<=1) { alert('No data rows found.'); return; }
+
+        // assume header on the first row; then parse simple CSV
+        for(let i=1;i<lines.length;i++){
+          const cols = parseCsvLine(lines[i]);
+          if(!cols || cols.length<4) continue;
+          const [name,a,b,share] = cols;
+
+          // add a row using original button so events attach
+          document.getElementById('addRow').click();
+          const last = body.lastElementChild;
+          const nameI  = last.children[0].querySelector('input');
+          const aI     = last.children[1].querySelector('input');
+          const bI     = last.children[2].querySelector('input');
+          const shareI = last.children[3].querySelector('input');
+
+          nameI.value  = name || '';
+          aI.value     = toNumber(a);
+          bI.value     = toNumber(b);
+          shareI.value = toNumber(share);
+
+          [nameI,aI,bI,shareI].forEach(el=>el.dispatchEvent(new Event('input',{bubbles:true})));
+        }
+      }catch(err){
+        alert('Import failed: ' + err.message);
+      }
+    };
+    reader.readAsText(file);
+  });
+
+  function toNumber(v){
+    if(v==null) return '';
+    const s = String(v).replace(/,/g,'').trim();
+    const n = parseFloat(s);
+    return isFinite(n) ? n : '';
+  }
+
+  function parseCsvLine(line){
+    // simple CSV parser (handles quotes)
+    const out = [];
+    let cur = '', inQ=false;
+    for(let i=0;i<line.length;i++){
+      const ch=line[i];
+      if(inQ){
+        if(ch==='"' && line[i+1]==='"'){ cur+='"'; i++; }
+        else if(ch==='"'){ inQ=false; }
+        else cur+=ch;
+      }else{
+        if(ch===','){ out.push(cur); cur=''; }
+        else if(ch==='"'){ inQ=true; }
+        else cur+=ch;
+      }
+    }
+    out.push(cur);
+    return out;
+  }
+})();
+</script>
+</body>
+</html>
