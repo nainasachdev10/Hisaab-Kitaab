@@ -2,8 +2,6 @@
 
 A modern cricket betting ledger calculator built with React, TypeScript, Vite, and Tailwind CSS.
 
-🌐 **Live Demo**: [View on GitHub Pages](https://nainasachdev10.github.io/Hisaab-Kitaab/)
-
 ## Features
 
 - 📊 Track customer exposures for cricket matches
